@@ -93,17 +93,26 @@ def check():
   assert flask.session["target_count"] > 0
   app.logger.debug("Fetched target_count")
   text = request.form["attempt"]
-  jumble = request.form.get("jumble", "", type=str)
+  jumble = flask.session["jumble"]
   app.logger.debug("Checking '{}' from '{}'".format(text, jumble))
   in_jumble = LetterBag(jumble).contains(text)
   matched = WORDS.has(text)
   app.logger.debug("Matched? {}".format(matched))
   matches = flask.session.get("matches", []) # Default to empty list
-  if matched and in_jumble:
+  if matched and in_jumble and not (text in matches):
     app.logger.debug("***Matched {}***".format(text))
     matches.append(text)
+    flask.session["matches"] = matches
+  elif text in matches:
+    flask.flash("You already found {}".format(text))
+  elif not matched:
+    flask.flash("{} isn't in the list of words".format(text))
+  elif not in_jumble:
+    flask.flash('"{}" can\'t be made from the letters {}'.format(text,jumble))
   else:
-    app.logger.debug("Not a match")
+    app.logger.debug("This case shouldn't happen!")
+    assert False  # Raises AssertionError
+
   if len(matches) >= flask.session["target_count"]:
     app.logger.debug("Success")
     return flask.redirect(url_for("success"))
@@ -124,6 +133,7 @@ def example():
   app.logger.debug("Got a JSON request");
   rslt = { "key": "value" }
   return jsonify(result=rslt)
+
 
 #################
 # Functions used within the templates

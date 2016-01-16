@@ -34,6 +34,10 @@
  crossorigin="anonymous">
 </script>
 
+<!-- Our own css file.  Note how we can link directly here and not -->
+<!-- write any routing code in the Flask application. -->
+<link rel="stylesheet" href="/static/jumble.css" />
+
 </head>
 
 <body>
@@ -78,20 +82,33 @@
   <div class="col-xs-6 text-center">
   <form id="entry" method="POST" action="/_check">
     <label for="attempt">Word:</label>
-    <input id="attempt" name="attempt" type="text" width="15" autocomplete="off" />
+    <input id="attempt" name="attempt" type="text" width="15"
+      autocomplete="off"  autofocus />
     <input type="submit" name="try" />
   </form>
 </div></div>
 
 <br />
 
-{% if matches in session %}
+{% if session.matches|length is not equalto 0  %}
+<h2>You found </h2>
 <p id="results">
   {% for match in session.matches %}
   {{ match }} 
   {% endfor %}
 </p>
 {% endif %}
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <!-- Mismatch, already found, etc. "flashed" from Python -->
+    {% for message in messages %}
+      <p class="message">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 
 
  </div> <!-- container -->
