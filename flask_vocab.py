@@ -3,10 +3,9 @@ Simple Flask web site
 """
 
 import flask
-from flask import render_template
-from flask import request
+# from flask import render_template
+from flask import request  # Data from a submitted form
 from flask import url_for
-from flask import session
 from flask import jsonify # For AJAX transactions
 
 import json
@@ -89,18 +88,28 @@ def success():
 
 @app.route("/_check", methods = ["POST"])
 def check():
+  """
+  User has submitted the form with a word ('attempt')
+  that should be formed from the jumble and on the
+  vocabulary list.  We respond depending on whether
+  the word is on the vocab list (therefore correctly spelled),
+  made only from the jumble letters, and not a word they
+  already found.
+  """
   app.logger.debug("Entering check")
-  assert flask.session["target_count"] > 0
-  app.logger.debug("Fetched target_count")
+
+  ## The data we need, from form and from cookie
   text = request.form["attempt"]
   jumble = flask.session["jumble"]
-  app.logger.debug("Checking '{}' from '{}'".format(text, jumble))
+  matches = flask.session.get("matches", []) # Default to empty list
+
+  ## Is it good? 
   in_jumble = LetterBag(jumble).contains(text)
   matched = WORDS.has(text)
-  app.logger.debug("Matched? {}".format(matched))
-  matches = flask.session.get("matches", []) # Default to empty list
+
+  ## Respond appropriately 
   if matched and in_jumble and not (text in matches):
-    app.logger.debug("***Matched {}***".format(text))
+    ## Cool, they found a new word
     matches.append(text)
     flask.session["matches"] = matches
   elif text in matches:
@@ -113,11 +122,10 @@ def check():
     app.logger.debug("This case shouldn't happen!")
     assert False  # Raises AssertionError
 
+  ## Choose page:  Solved enough, or keep going? 
   if len(matches) >= flask.session["target_count"]:
-    app.logger.debug("Success")
     return flask.redirect(url_for("success"))
   else:
-    app.logger.debug("Redirecting to 'keep going'")
     return flask.redirect(url_for("keep_going"))
 
 ###############
@@ -158,7 +166,7 @@ def error_404(e):
 @app.errorhandler(500)
 def error_500(e):
    app.logger.warning("++ 500 error: {}".format(e))
-   assert app.debug == False # Why did
+   assert app.debug == False #  I want to invoke the debugger
    return render_template('500.html'), 500
 
 @app.errorhandler(403)
@@ -175,9 +183,7 @@ def error_403(e):
 #
 
 if __name__ == "__main__":
-    # Standalone, with a dynamically generated
-    # secret key.  Debugger is using PIN code now;
-    # should be safe even when globally accessible from ix.
+    # Standalone. 
     app.debug = True
     app.logger.setLevel(logging.DEBUG)
     print("Opening for global access on port {}".format(CONFIG.PORT))
@@ -185,6 +191,7 @@ if __name__ == "__main__":
 else:
     # Running from cgi-bin or from gunicorn WSGI server, 
     # which makes the call to app.run.  Gunicorn may invoke more than
-    # one instance for concurrent service. 
+    # one instance for concurrent service.
+    #FIXME:  Debug cgi interface 
     app.debug=False
 
