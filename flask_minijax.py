@@ -19,14 +19,6 @@ app = flask.Flask(__name__)
 import CONFIG
 app.secret_key = CONFIG.COOKIE_KEY  # Should allow using session variables
 
-#
-# One shared 'Vocab' object, read-only after initialization,
-# shared by all threads and instances.  Otherwise we would have to
-# store it in the browser and transmit it on each request/response cycle, 
-# or else read it from the file on each request/responce cycle,
-# neither of which would be suitable for responding keystroke by keystroke.
-#
-
 
 ###
 # Pages
