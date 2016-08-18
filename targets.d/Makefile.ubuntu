@@ -1,0 +1,10 @@
+#
+# On some ubuntu systems, including ix.cs.uoregon.edu, we 
+# don't have 'pyvenv' but do have 'pyvenv-3.4'.  
+#
+# FIXME:  It would be better if we could dynamically determine which 
+#   versions of pyvenv were available, and choose one (the most recent?). 
+#   Not critical for now ... consider for future improvement. 
+# 
+PYVENV = pyvenv-3.4
+

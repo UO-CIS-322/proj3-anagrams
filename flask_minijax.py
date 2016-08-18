@@ -17,7 +17,7 @@ import sys
 ###
 app = flask.Flask(__name__)
 import CONFIG
-app.secret_key = CONFIG.COOKIE_KEY  # Should allow using session variables
+app.secret_key = CONFIG.secret_key  # Should allow using session variables
 
 
 ###

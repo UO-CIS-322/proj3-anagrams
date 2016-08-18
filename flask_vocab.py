@@ -3,7 +3,6 @@ Simple Flask web site
 """
 
 import flask
-# from flask import render_template
 from flask import request  # Data from a submitted form
 from flask import url_for
 from flask import jsonify # For AJAX transactions
@@ -23,7 +22,7 @@ from jumble import jumbled
 ###
 app = flask.Flask(__name__)
 import CONFIG
-app.secret_key = CONFIG.COOKIE_KEY  # Should allow using session variables
+app.secret_key = CONFIG.secret_key  # Should allow using session variables
 
 #
 # One shared 'Vocab' object, read-only after initialization,
@@ -56,7 +55,7 @@ WORDS = Vocab( CMDLN.vocab )
 @app.route("/index")
 def index():
   flask.g.vocab = WORDS.as_list();
-  flask.session["target_count"] = min( len(flask.g.vocab), CONFIG.SUCCESS_COUNT )
+  flask.session["target_count"] = min( len(flask.g.vocab), CONFIG.success_at_count )
   flask.session["jumble"] = jumbled(flask.g.vocab, flask.session["target_count"])
   flask.session["matches"] = [ ]
   app.logger.debug("Session variables have been set")

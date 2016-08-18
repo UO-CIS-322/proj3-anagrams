@@ -1,0 +1,8 @@
+# 
+#  On most platforms, we can expect the script 'pyvenv' to be installed. 
+#  
+#  FIXME:  Ideally we should test this in the script, and use pyvenv if it
+#          exists or a pyvenv-3.* if only version-specific pyvenvs exist. 
+#
+PYVENV = pyvenv
+

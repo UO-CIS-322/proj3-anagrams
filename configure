@@ -1,0 +1,10 @@
+#! /bin/bash
+# 
+# Configure for a given target environment. 
+# May be invoked directly or through 'make configure'
+#
+echo "Selecting configuration file ..."
+(cd targets.d; ./choose_config.sh)
+
+echo "Installing virtual environment with required Python packages"
+make env
