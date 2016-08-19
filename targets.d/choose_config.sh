@@ -17,6 +17,7 @@ processor=`uname -p`
 opsys=`uname -v`
 port="5000"   # But see how this is altered for shared server ix
 
+
 # Generate configuration file text with a couple of choices
 #
 function gen_config {
@@ -34,6 +35,7 @@ PORT=${port}
 DEBUG = True  # Set to False for production use
 secret_key="${secret}"
 success_at_count = 3  # How many matches before we declare victory? 
+vocab="data/vocab.txt"  # CHANGE THIS to use another vocabulary file
 
 EOF
 }

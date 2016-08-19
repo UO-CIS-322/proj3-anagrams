@@ -30,22 +30,8 @@ app.secret_key = CONFIG.secret_key  # Should allow using session variables
 # store it in the browser and transmit it on each request/response cycle, 
 # or else read it from the file on each request/responce cycle,
 # neither of which would be suitable for responding keystroke by keystroke.
-#
 
-def get_command_line():
-  """
-  Returns a namespace of command-line argument values
-  """
-  parser = argparse.ArgumentParser(
-    description="Vocabulary anagram through a web server")
-  parser.add_argument("vocab", type=argparse.FileType('r'),
-                      default="data/vocab.txt",
-                      help="A file containing vocabulary words, one per line")
-  args = parser.parse_args()
-  return args
-
-CMDLN = get_command_line()
-WORDS = Vocab( CMDLN.vocab )
+WORDS = Vocab( CONFIG.vocab )
 
 ###
 # Pages
