@@ -59,7 +59,7 @@
 </div></div>
 
 <p id="response"> </p>  <!-- JavaScript will insert text here -->
-
+<p id="tiles"> </p> <!-- Illustration of inserting graphics into page -->
 <script>
 
 // Suppress normal form submission
@@ -69,11 +69,27 @@ $("#entry").submit( function(event) {
 
 // On each keystroke, ask the server whether the current 
 // word is long enough. 
-// (We use 'keyup' because the form value
-// is updated before that event is generated.  keypress doesn't work.)
 //
-$("#attempt").keyup(function() {
-   var txt = $("#attempt").val();
+// We use 'keyup' because the form value
+// is updated before that event is generated.
+// keypress is triggered before the input field has been
+// updated.  Be aware that we'll see non-character keys like
+// shift and control, so make sure whatever you do with the
+// event does not depend on it being a letter. 
+//
+$("#attempt").keyup(function(event) {
+   var txt = $("#attempt").val();  // Current content of the input field
+   var keycode = event.which;      // They key that just went up
+   var letter = String.fromCharCode(keycode);
+
+   // That letter might not be a letter ... it could be the
+   // the backspace key, or even the shift key, because 'keyup'
+   // catches all kinds of keys.  (Also, the difference between
+   // upper and lower case comes from state of shift key + key code,
+   // so ignoring the shift key we get only the upper case letters.
+
+   if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) { return }
+
    $.getJSON( "/_countem", { text: txt }, 
               function(data) {
                 rsval = data.result.long_enough;
@@ -82,11 +98,37 @@ $("#attempt").keyup(function() {
                    $("#response").html("That's enough!");
                    $("#attempt").val("");
                 } else {
-                   $("#response").append("MORE ");
+                   $("#response").append(txt.length + " "); 
                 }
+                showTiles(txt);
                }
            );
    });
+
+// Demonstration of how we can insert graphical elements
+// into a page, possibly building up the URLs of the elements
+// dynamically.  In this case I have a set of Scrabble tiles with
+// point values and a consistent naming scheme that allows me to
+// generate a URL for each letter.  Browsers should cache the graphics
+// files so that http requests are sent only the first time each
+// element is encountered. 
+//
+function showTiles(text) {
+   text = text.toUpperCase();  // tiles are letter-A.png, etc.
+   tiles_html = "";  // Build up the html text of links
+   for (var i=0; i < text.length; i++) {
+       letter = text.charAt(i);
+       if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {
+          continue;
+       }
+       var tileURL = "/static/img/letter-" + letter + ".png";
+       var tileLink = "<img src='" + tileURL +
+           "' style='border: 0px; margin: 0px;'/>";
+       tiles_html = tiles_html + tileLink;
+    }
+    $("#tiles").html(tiles_html);
+    // alert("Inserted html: " + tiles_html);
+}
 </script>
 
 
