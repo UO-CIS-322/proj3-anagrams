@@ -34,6 +34,7 @@ def test_from_simulated_file():
         #comment
         # another comment line
         sheep
+
         rats
         #comment
         squirrels
