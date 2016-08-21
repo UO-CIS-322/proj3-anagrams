@@ -10,6 +10,10 @@
 #  'make configure' may also work, but with error
 #   messages.
 
+# Many recipes need to be run in the virtual environment, 
+# so run them as $(INVENV) command
+INVENV = source env/bin/activate;
+
 Makefile.local: 
 	bash ./configure
 
@@ -20,20 +24,13 @@ include Makefile.local  ## Where customizations go
 ##     
 env:
 	$(PYVENV)  env
-	(.  env/bin/activate; pip install -r requirements.txt)
-
-
-##
-## Preserve virtual environment
-##
-dist:
-	pip freeze >requirements.txt
+	$(INVENV) pip install -r requirements.txt
 
 # 'make run' runs Flask's built-in test server, 
 #  with debugging turned on unless it is unset in CONFIG.py
 # 
 run:	env
-	( . env/bin/activate; python3 flask_vocab.py ) || true
+	$(INVENV) python3 flask_vocab.py ||  true
 
 # 'make service' runs as a background job under the gunicorn 
 #  WSGI server. FIXME:  A real production service would use 
@@ -45,7 +42,23 @@ run:	env
 # 
 service:	env
 	echo "Launching green unicorn in background"
-	( . env/bin/activate; gunicorn --bind="0.0.0.0:8000" flask_vocab:app &) 
+	$(INVENV) gunicorn --bind="0.0.0.0:8000" flask_vocab:app &
+
+##
+## Run test suite. 
+## Currently 'nose' takes care of this, but in future we 
+## might add test cases that can't be run under 'nose' 
+##
+test:	env
+	$(INVENV) nosetests
+
+
+##
+## Preserve virtual environment for git repository
+## to duplicate it on other targets
+##
+dist:	env
+	$(INVENV) pip freeze >requirements.txt
 
 
 # 'clean' and 'veryclean' are typically used before checking 
