@@ -12,7 +12,7 @@
 
 # Many recipes need to be run in the virtual environment, 
 # so run them as $(INVENV) command
-INVENV = source env/bin/activate;
+INVENV = . env/bin/activate ;
 
 Makefile.local: 
 	bash ./configure
