@@ -24,13 +24,13 @@ include Makefile.local  ## Where customizations go
 ##     
 env:
 	$(PYVENV)  env
-	$(INVENV) pip install -r requirements.txt
+	($(INVENV) pip install -r requirements.txt )
 
 # 'make run' runs Flask's built-in test server, 
 #  with debugging turned on unless it is unset in CONFIG.py
 # 
 run:	env
-	$(INVENV) python3 flask_vocab.py ||  true
+	($(INVENV) python3 flask_vocab.py) ||  true
 
 # 'make service' runs as a background job under the gunicorn 
 #  WSGI server. FIXME:  A real production service would use 
@@ -42,7 +42,7 @@ run:	env
 # 
 service:	env
 	echo "Launching green unicorn in background"
-	$(INVENV) gunicorn --bind="0.0.0.0:8000" flask_vocab:app &
+	($(INVENV) gunicorn --bind="0.0.0.0:8000" flask_vocab:app )&
 
 ##
 ## Run test suite. 
