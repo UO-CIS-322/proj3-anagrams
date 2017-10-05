@@ -1,0 +1,14 @@
+# Vocabulary words for anagram game
+rabbit
+rat
+bunny
+vampire
+mouse
+gnaw
+chew
+awesome
+squirrel
+chipmunk
+nuts
+rodent
+tree

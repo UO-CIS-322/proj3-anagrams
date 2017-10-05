@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+
+<!-- Bootstrap requires the following three meta tags to appear first -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Type 5</title>
+
+<!-- Javascript and Cascading Style Sheets (css) libraries -->
+<!-- mostly from content delivery networks                 -->
+
+<!-- jquery; CDN load is usually quick because it's likely cached -->
+<script type="text/javascript"
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+</script>
+
+<!-- Bootstrap stylesheet let's us have a 'responsive' layout; -->
+<!-- 12 column grid rearranges itself for smaller screens or windows. -->
+
+<!-- per http://getbootstrap.com/getting-started/  -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+ href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+ integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+  crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script
+ src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+ integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+ crossorigin="anonymous">
+</script>
+
+<!-- Our own css file.  Note how we can link directly here and not -->
+<!-- write any routing code in the Flask application. -->
+<link rel="stylesheet" href="/static/jumble.css" />
+
+</head>
+
+<body>
+<div class="container">
+
+  <div class="row">
+    <div class="col-xs-6 text-center">
+      <h1>Type 5 characters!</h1>
+    </div>
+  </div>
+
+<div class="row">
+  <div class="col-xs-6 text-center">
+  <form id="entry">
+    <label for="attempt">Word:</label>
+    <input id="attempt" name="attempt" type="text" width="15"
+      autocomplete="off"  autofocus />
+  </form>
+</div></div>
+
+<p id="response"> </p>  <!-- JavaScript will insert text here -->
+<p id="tiles"> </p> <!-- Illustration of inserting graphics into page -->
+<script>
+
+// Suppress normal form submission
+$("#entry").submit( function(event) {
+   event.preventDefault();
+  });
+
+// On each keystroke, ask the server whether the current 
+// word is long enough. 
+//
+// We use 'keyup' because the form value
+// is updated before that event is generated.
+// keypress is triggered before the input field has been
+// updated.  Be aware that we'll see non-character keys like
+// shift and control, so make sure whatever you do with the
+// event does not depend on it being a letter. 
+//
+$("#attempt").keyup(function(event) {
+   var txt = $("#attempt").val();  // Current content of the input field
+   var keycode = event.which;      // They key that just went up
+   var letter = String.fromCharCode(keycode);
+
+   // That letter might not be a letter ... it could be the
+   // the backspace key, or even the shift key, because 'keyup'
+   // catches all kinds of keys.  (Also, the difference between
+   // upper and lower case comes from state of shift key + key code,
+   // so ignoring the shift key we get only the upper case letters.
+
+   if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) { return }
+
+   $.getJSON( "/_countem", { text: txt }, 
+              function(data) {
+                rsval = data.result.long_enough;
+                console.log("rsval: " + rsval)
+                if (rsval) {
+                   $("#response").html("That's enough!");
+                   $("#attempt").val("");
+                } else {
+                   $("#response").append(txt.length + " "); 
+                }
+                showTiles(txt);
+               }
+           );
+   });
+
+// Demonstration of how we can insert graphical elements
+// into a page, possibly building up the URLs of the elements
+// dynamically.  In this case I have a set of Scrabble tiles with
+// point values and a consistent naming scheme that allows me to
+// generate a URL for each letter.  Browsers should cache the graphics
+// files so that http requests are sent only the first time each
+// element is encountered. 
+//
+function showTiles(text) {
+   text = text.toUpperCase();  // tiles are letter-A.png, etc.
+   tiles_html = "";  // Build up the html text of links
+   for (var i=0; i < text.length; i++) {
+       letter = text.charAt(i);
+       if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {
+          continue;
+       }
+       var tileURL = "/static/img/letter-" + letter + ".png";
+       var tileLink = "<img src='" + tileURL +
+           "' style='border: 0px; margin: 0px;'/>";
+       tiles_html = tiles_html + tileLink;
+    }
+    $("#tiles").html(tiles_html);
+    // alert("Inserted html: " + tiles_html);
+}
+</script>
+
+
+ </div> <!-- container -->
+</body> </html>
