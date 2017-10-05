@@ -4,14 +4,15 @@ Author: M Young, December 2016.  michal@cs.uoregon.edu, Github: MichalYoung
 
 """
 
+
 class LetterBag():
     """
     Bag of letters structure for anagrams
-    
+
     A letterbag is a bag (in the mathematical sense) of characters
     that might be used to form a word.  It's a bag and not a set
     because 'llax' can be used to make the word 'all' but 'lmax' cannot.
-    
+
     """
     # Instance variables
     letters = None  # See value created in __init__
@@ -28,7 +29,7 @@ class LetterBag():
         self.letters = dict()
         for letter in word:
             count = self.letters.get(letter, 0)
-            self.letters[letter] = count+1
+            self.letters[letter] = count + 1
         return
 
     def merge(self, other):
@@ -43,11 +44,11 @@ class LetterBag():
         """
         allkeys = list(self.letters.keys()) + list(other.letters.keys())
         for letter in allkeys:
-            self.letters[letter] = max( self.letters.get(letter, 0),
-                                        other.letters.get(letter, 0))
+            self.letters[letter] = max(self.letters.get(letter, 0),
+                                       other.letters.get(letter, 0))
         return
 
-    def contains(self,other):
+    def contains(self, other):
         """
         Self contains other.
         Args:
@@ -58,24 +59,24 @@ class LetterBag():
            the letter count of self.
         Examples:
            LetterBag("abbc").contains(LetterBag("abc")) == True
-           LetterBag("abbc").contains("abc") == True 
+           LetterBag("abbc").contains("abc") == True
            LetterBag("abbc").contains(LetterBag("abbc")) == True
            LetterBag("abc").contains(LetterBag("abbc")) == False
         """
-        if isinstance(other,str):
+        if isinstance(other, str):
             other = LetterBag(other)
         for letter in other.letters.keys():
             if other.letters.get(letter) > self.letters.get(letter, 0):
                 return False
         return True
-    
-    
+
     def as_string(self):
         """
         Canonical string representation is sorted sequence of letters.
         (Useful in testing.)
         """
-        return "".join(sorted([ n*letter for letter,n in self.letters.items()]))
+        return "".join(sorted([n * letter
+                               for letter, n in self.letters.items()]))
 
     def __str__(self):
         """
@@ -88,6 +89,3 @@ class LetterBag():
         Representation looks like constructor.
         """
         return 'LetterBag("{}")'.format(str(self))
-
-
-        

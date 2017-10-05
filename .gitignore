@@ -1,6 +1,7 @@
 # Project specific / mac specific
 .DS_Store
 CONFIG.py
+credentials.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
