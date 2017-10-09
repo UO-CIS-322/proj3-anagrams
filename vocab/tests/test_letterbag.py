@@ -1,6 +1,13 @@
 """
 Nose tests for letterbag.py
 """
+import nose    # Testing framework
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s',
+                        level=logging.WARNING)
+log = logging.getLogger(__name__)
+
+
 from letterbag import LetterBag
 
 def test_empty():

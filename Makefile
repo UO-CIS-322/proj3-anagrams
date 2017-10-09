@@ -1,8 +1,10 @@
 #
 # Project 3:  Vocabulary game with AJAX interaction
 #
-# Gnu make and bash are required. 
 #
+
+SHELL = /bin/bash
+
 # Many recipes need to be run in the virtual environment, 
 # so run them as $(INVENV) command
 INVENV = source env/bin/activate ;
@@ -33,7 +35,7 @@ stop:
 ## might add test cases that can't be run under 'nose' 
 ##
 test:	env
-	$(INVENV) nosetests
+	$(INVENV) cd vocab;  nosetests
 
 # 'clean' and 'veryclean' are typically used before checking 
 # things into git.  'clean' should leave the project ready to 

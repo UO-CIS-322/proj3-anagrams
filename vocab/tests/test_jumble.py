@@ -6,6 +6,12 @@ but we can test that the elements in the returned string
 are correct.
 """
 
+import nose    # Testing framework
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s',
+                        level=logging.WARNING)
+log = logging.getLogger(__name__)
+
 from jumble import jumbled
 
 def same(s, t):
