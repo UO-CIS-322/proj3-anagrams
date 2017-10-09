@@ -1,5 +1,7 @@
 """
-Simple Flask web site
+Flask web site with vocabulary matching game
+(identify vocabulary words that can be made 
+from a scrambled string)
 """
 
 import flask
@@ -26,7 +28,7 @@ app.secret_key = CONFIG.SECRET_KEY  # Should allow using session variables
 # or else read it from the file on each request/responce cycle,
 # neither of which would be suitable for responding keystroke by keystroke.
 
-WORDS = Vocab(CONFIG.vocab)
+WORDS = Vocab(CONFIG.VOCAB)
 
 ###
 # Pages
@@ -85,7 +87,7 @@ def check():
     app.logger.debug("Entering check")
 
     # The data we need, from form and from cookie
-    text = request.form["attempt"]
+    text = flask.request.form["attempt"]
     jumble = flask.session["jumble"]
     matches = flask.session.get("matches", [])  # Default to empty list
 
@@ -109,11 +111,11 @@ def check():
         app.logger.debug("This case shouldn't happen!")
         assert False  # Raises AssertionError
 
-        # Choose page:  Solved enough, or keep going?
-        if len(matches) >= flask.session["target_count"]:
-            return flask.redirect(url_for("success"))
-        else:
-            return flask.redirect(url_for("keep_going"))
+    # Choose page:  Solved enough, or keep going?
+    if len(matches) >= flask.session["target_count"]:
+       return flask.redirect(flask.url_for("success"))
+    else:
+       return flask.redirect(flask.url_for("keep_going"))
 
 ###############
 # AJAX request handlers
@@ -128,7 +130,7 @@ def example():
     """
     app.logger.debug("Got a JSON request")
     rslt = {"key": "value"}
-    return jsonify(result=rslt)
+    return flask.jsonify(result=rslt)
 
 
 #################

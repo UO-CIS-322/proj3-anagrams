@@ -31,8 +31,8 @@ stop:
 
 ##
 ## Run test suite. 
-## Currently 'nose' takes care of this, but in future we 
-## might add test cases that can't be run under 'nose' 
+## To make Python path search work as needed, we run
+## from within the 'vocab' directory. 
 ##
 test:	env
 	$(INVENV) cd vocab;  nosetests
