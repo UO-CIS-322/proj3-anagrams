@@ -18,6 +18,16 @@ have different anagrams.
 
 Initial version by M Young; to be revised by CIS 322 students. 
 
+## Known bugs
+
+The start/stop scheme is not working.  Flask (or perhaps the virtual
+environment) is creating two Unix processes running the application,
+and I am capturing the process ID for only one of them.  Therefore
+stop.sh manages to kill only one, leaving the other running.  At this
+time I do not know a workaround.  It is necessary to kill the second
+process manually.  Use 'ps | grep python' to discover it, then 'kill'
+to kill it.  Or, on Linux systems, use the 'killall' command. 
+
 ## Status
 
 flask_vocab.py and the template vocab.html are a 'skeleton' version 
@@ -38,5 +48,6 @@ version of the project you turn in.
 
 There are currently nose tests for vocab.py, letterbag.py, and jumble.py. 
 
-
+'make test' should work.  To run 'nosetests' explicitly, you must be
+in the 'vocab' subdirectory. 
 
